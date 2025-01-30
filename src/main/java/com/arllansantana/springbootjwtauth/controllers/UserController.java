@@ -94,17 +94,17 @@ public class UserController {
     }
     @PutMapping("/mudar-senha")
     @PreAuthorize("hasAuthority('Participante') or hasAuthority('Administrador')")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request, Authentication authentication) {
-        // Verificar se as senhas coincidem
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) { // Alterado aqui
+
         if (!request.getNovaSenha().equals(request.getConfirmaNovaSenha())) {
             return ResponseEntity.badRequest().body("As senhas não coincidem.");
         }
 
-        // Obter o ID do usuário da sessão
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        // Obter ID diretamente do userDetails
         Long userId = userDetails.getId();
 
-        // Chamar o UserService para atualizar a senha
         userService.changePassword(userId, request.getNovaSenha());
 
         return ResponseEntity.ok("Senha alterada com sucesso.");
