@@ -33,7 +33,7 @@ public class PalestraController {
 
     @PostMapping("/{eventoId}")
     @PreAuthorize("hasAuthority('Administrador')")
-    public ResponseEntity<Palestra> adicionarPalestra(@PathVariable Long eventoId, @RequestBody Palestra palestra) {
+    public ResponseEntity<PalestraDTO> adicionarPalestra(@PathVariable Long eventoId, @RequestBody PalestraDTO palestraDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User administradorLogado = userRepository.findByEmail(email)
@@ -46,9 +46,23 @@ public class PalestraController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        // Criar um objeto Palestra a partir do PalestraDTO
+        Palestra palestra = new Palestra();
+        palestra.setTema(palestraDTO.getTema());
+        palestra.setPalestrante(palestraDTO.getPalestrante());
+        palestra.setData(palestraDTO.getData());
+        palestra.setHora(palestraDTO.getHora());
+        palestra.setLocal(palestraDTO.getLocal());
+        palestra.setDescricao(palestraDTO.getDescricao());
         palestra.setEvento(evento);
-        return new ResponseEntity<>(palestraRepository.save(palestra), HttpStatus.CREATED);
+
+        // Salvar e retornar o PalestraDTO
+        Palestra savedPalestra = palestraRepository.save(palestra);
+        PalestraDTO savedPalestraDTO = convertToDto(savedPalestra);
+
+        return new ResponseEntity<>(savedPalestraDTO, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{palestraId}")
     @PreAuthorize("hasAuthority('Administrador')")

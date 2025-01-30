@@ -1,13 +1,16 @@
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\controllers\AuthController.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\controllers\EventoController.java
+D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\controllers\InscricaoController.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\controllers\PalestraController.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\controllers\TestController.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\controllers\UserController.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\models\Evento.java
+D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\models\Inscricao.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\models\Palestra.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\models\User.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\request\ChangePasswordRequest.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\request\EventoDTO.java
+D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\request\InscricaoDTO.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\request\LoginRequest.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\request\PalestraDTO.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\request\SignupRequest.java
@@ -15,6 +18,7 @@ D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\r
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\response\JwtResponse.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\payload\response\MessageResponse.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\repository\EventoRepository.java
+D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\repository\InscricaoRepository.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\repository\PalestraRepository.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\repository\UserRepository.java
 D:\Dev\eventeasy-api\src\main\java\com\arllansantana\springbootjwtauth\security\jwt\AuthEntryPointJwt.java
