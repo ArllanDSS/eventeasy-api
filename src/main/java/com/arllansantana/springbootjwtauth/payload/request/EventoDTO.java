@@ -24,4 +24,5 @@ public class EventoDTO {
     private Integer quantidadeParticipantes;
     private UserDTO administrador;
     private List<PalestraDTO> palestras;
+    private String imagem; // Base64
 }

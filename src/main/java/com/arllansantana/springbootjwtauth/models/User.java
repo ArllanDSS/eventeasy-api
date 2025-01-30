@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "usuarios",
         uniqueConstraints = {
@@ -37,6 +39,9 @@ public class User {
     @Column(name = "senha")
     @Size(max = 120)
     private String password;
+
+    @OneToMany(mappedBy = "participante")
+    private List<Inscricao> inscricoes;
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;

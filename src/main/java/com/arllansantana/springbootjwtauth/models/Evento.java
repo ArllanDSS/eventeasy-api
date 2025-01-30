@@ -1,10 +1,14 @@
 package com.arllansantana.springbootjwtauth.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,12 +27,21 @@ public class Evento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String nome;
+    @NotNull
     private LocalDate data;
+    @NotNull
     private LocalTime hora;
+    @NotNull
     private String local;
     private String descricao;
+    @NotNull
     private Integer quantidadeParticipantes;
+
+    @Basic(optional = false,fetch = FetchType.LAZY)
+    @Column(name = "imagem", columnDefinition = "bytea")
+    private byte[] imagem;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -36,4 +49,8 @@ public class Evento {
 
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Palestra> palestras = new ArrayList<>();
+
+    @OneToMany(mappedBy = "evento")
+    private List<Inscricao> inscricoes;
+
 }
