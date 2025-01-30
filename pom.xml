@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.arllansantana</groupId>
-    <artifactId>pweb-project-api</artifactId>
+    <artifactId>eventeasy</artifactId>
     <version>1.0.0</version>
     <name>springboot-jwt-auth</name>
     <description>springboot-jwt-auth</description>
