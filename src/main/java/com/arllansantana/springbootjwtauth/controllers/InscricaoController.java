@@ -3,10 +3,13 @@ package com.arllansantana.springbootjwtauth.controllers;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.arllansantana.springbootjwtauth.payload.request.EventoDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -53,6 +56,7 @@ public class InscricaoController {
         return ResponseEntity.ok("Inscrição realizada com sucesso!");
     }
 
+
     @GetMapping
     @PreAuthorize("hasAuthority('Participante')")
     public ResponseEntity<?> listarInscricoes(Authentication authentication) {
@@ -61,14 +65,16 @@ public class InscricaoController {
         Long participanteId = userDetails.getId();
 
         // Buscar as inscrições do participante
+
         List<Inscricao> inscricoes = inscricaoRepository.findByParticipanteId(participanteId);
 
         // Mapeando os eventos das inscrições para EventoDTO
         List<EventoDTO> eventosInscritos = inscricoes.stream()
                 .map(inscricao -> {
                     Evento evento = inscricao.getEvento();
-                    String imagemBase64 = evento.getImagem() != null ? Base64.getEncoder().encodeToString(evento.getImagem()) : null;
-                    // Mapeamento do Evento para DTO
+                    String imagemBase64 = evento.getImagem()!= null? Base64.getEncoder().encodeToString(evento.getImagem()): null;
+
+                    // Mapeamento do Evento para DTO com o ID da inscrição
                     return EventoDTO.builder()
                             .id(evento.getId())
                             .nome(evento.getNome())
@@ -77,7 +83,8 @@ public class InscricaoController {
                             .local(evento.getLocal())
                             .descricao(evento.getDescricao())
                             .quantidadeParticipantes(evento.getQuantidadeParticipantes())
-                            .imagem(imagemBase64) // Caso a imagem esteja no formato Base64
+                            .imagem(imagemBase64)
+                            .inscricaoId(inscricao.getId()) // Adicionando o ID da inscrição
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -88,20 +95,28 @@ public class InscricaoController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('Participante')")
-    public ResponseEntity<?> cancelarInscricao(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User participante = userRepository.findById(userDetails.getId()).orElseThrow();
+    public ResponseEntity<?> cancelarInscricao(@PathVariable Long id, Authentication authentication) {
+        try {
+            // Verificar se a inscrição existe
+            Inscricao inscricao = inscricaoRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Inscrição não encontrada"));
 
-        Inscricao inscricao = inscricaoRepository.findById(id).orElseThrow();
+            // Verificar se a inscrição pertence ao participante logado
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            Long participanteId = userDetails.getId();
+            if (!inscricao.getParticipante().getId().equals(participanteId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Você não tem permissão para cancelar esta inscrição.");
+            }
 
-        if (!inscricao.getParticipante().getId().equals(participante.getId())) {
-            return ResponseEntity.badRequest().body("Inscrição não encontrada para este participante.");
+            // Remover a inscrição
+            inscricaoRepository.delete(inscricao);
+
+            return ResponseEntity.ok("Inscrição cancelada com sucesso!");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        inscricaoRepository.delete(inscricao);
-
-        return ResponseEntity.ok("Inscrição cancelada com sucesso!");
     }
+
 
 }

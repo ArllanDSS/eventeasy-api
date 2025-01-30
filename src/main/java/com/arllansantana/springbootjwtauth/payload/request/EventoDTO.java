@@ -25,4 +25,5 @@ public class EventoDTO {
     private UserDTO administrador;
     private List<PalestraDTO> palestras;
     private String imagem; // Base64
+    private Long inscricaoId; // Novo campo para o ID da inscrição
 }
