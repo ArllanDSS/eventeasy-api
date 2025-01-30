@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PalestraRepository extends JpaRepository<Palestra, Long> {
-
     List<Palestra> findByEventoId(Long eventoId);
 }

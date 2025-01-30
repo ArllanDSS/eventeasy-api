@@ -7,6 +7,7 @@ import com.arllansantana.springbootjwtauth.payload.request.EventoDTO;
 import com.arllansantana.springbootjwtauth.payload.request.PalestraDTO;
 import com.arllansantana.springbootjwtauth.payload.request.UserDTO;
 import com.arllansantana.springbootjwtauth.repository.EventoRepository;
+import com.arllansantana.springbootjwtauth.repository.PalestraRepository;
 import com.arllansantana.springbootjwtauth.repository.UserRepository;
 import com.arllansantana.springbootjwtauth.security.services.UserDetailsServiceImpl;
 import jakarta.transaction.Transactional;
@@ -30,6 +31,9 @@ import java.util.stream.Collectors;
 public class EventoController {
 
     private static final Logger logger = LoggerFactory.getLogger(EventoController.class);
+
+    @Autowired
+    private PalestraRepository palestraRepository;
 
     @Autowired
     private EventoRepository eventoRepository;
@@ -104,8 +108,18 @@ public class EventoController {
         Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
 
+        // Recuperar as palestras associadas ao evento
+        List<Palestra> palestras = palestraRepository.findByEventoId(eventoId);
+
+        // Converter as palestras para PalestraDTO
+        List<PalestraDTO> palestrasDTO = palestras.stream()
+                .map(this::convertToDto) // Assume-se que você já tenha um método para converter Palestra para PalestraDTO
+                .collect(Collectors.toList());
+
+        // Converter a imagem para base64 (se existir)
         String imagemBase64 = evento.getImagem() != null ? Base64.getEncoder().encodeToString(evento.getImagem()) : null;
 
+        // Criar o EventoDTO com as palestras
         EventoDTO eventoDTO = EventoDTO.builder()
                 .id(evento.getId())
                 .nome(evento.getNome())
@@ -115,6 +129,7 @@ public class EventoController {
                 .descricao(evento.getDescricao())
                 .quantidadeParticipantes(evento.getQuantidadeParticipantes())
                 .imagem(imagemBase64)
+                .palestras(palestrasDTO) // Adicionando as palestras no DTO
                 .build();
 
         return new ResponseEntity<>(eventoDTO, HttpStatus.OK);
